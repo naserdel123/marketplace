@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سوق الأساطير - المنتجات</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-store"></i>
+            <span>سوق الأساطير</span>
+        </div>
+        
+        <div class="search-section">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="ابحث عن منتج...">
+                <div class="search-filters">
+                    <select id="countryFilter">
+                        <option value="">جميع البلدان</option>
+                        <option value="sa">🇸🇦 السعودية</option>
+                        <option value="ae">🇦🇪 الإمارات</option>
+                        <option value="kw">🇰🇼 الكويت</option>
+                        <option value="qa">🇶🇦 قطر</option>
+                        <option value="bh">🇧🇭 البحرين</option>
+                        <option value="om">🇴🇲 عمان</option>
+                        <option value="eg">🇪🇬 مصر</option>
+                        <option value="sd">🇸🇩 السودان</option>
+                        <option value="jo">🇯🇴 الأردن</option>
+                        <option value="iq">🇮🇶 العراق</option>
+                        <option value="sy">🇸🇾 سوريا</option>
+                        <option value="lb">🇱🇧 لبنان</option>
+                        <option value="ye">🇾🇪 اليمن</option>
+                        <option value="ma">🇲🇦 المغرب</option>
+                        <option value="tn">🇹🇳 تونس</option>
+                        <option value="dz">🇩🇿 الجزائر</option>
+                        <option value="ly">🇱🇾 ليبيا</option>
+                        <option value="ps">🇵🇸 فلسطين</option>
+                        <option value="us">🇺🇸 أمريكا</option>
+                        <option value="uk">🇬🇧 بريطانيا</option>
+                        <option value="tr">🇹🇷 تركيا</option>
+                        <option value="other">🌍 دول أخرى</option>
+                    </select>
+                    <input type="text" id="cityFilter" placeholder="المدينة...">
+                </div>
+                <button class="search-btn" onclick="searchProducts()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="nav-menu">
+            <button class="menu-dots" onclick="toggleMenu()">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            
+            <div class="dropdown-menu" id="userMenu">
+                <a href="#" class="menu-item" onclick="showProfile()">
+                    <div class="menu-icon"><i class="fas fa-user-circle"></i></div>
+                    <div class="menu-info">
+                        <span class="menu-title">الملف الشخصي</span>
+                        <span class="menu-desc">عرض وتعديل بياناتك</span>
+                    </div>
+                </a>
+                
+                <a href="#" class="menu-item" onclick="showHelp()">
+                    <div class="menu-icon"><i class="fas fa-question-circle"></i></div>
+                    <div class="menu-info">
+                        <span class="menu-title">المساعدة</span>
+                        <span class="menu-desc">مركز المساعدة والدعم</span>
+                    </div>
+                </a>
+                
+                <div class="menu-divider"></div>
+                
+                <a href="/add-product" class="menu-item highlight">
+                    <div class="menu-icon"><i class="fas fa-plus-circle"></i></div>
+                    <div class="menu-info">
+                        <span class="menu-title">نشر منتج</span>
+                        <span class="menu-desc">أضف منتجك للبيع</span>
+                    </div>
+                </a>
+                
+                <div class="menu-divider"></div>
+                
+                <a href="#" class="menu-item logout" onclick="logout()">
+                    <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
+                    <div class="menu-info">
+                        <span class="menu-title">تسجيل الخروج</span>
+                        <span class="menu-desc">الخروج من الحساب</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="welcome-section">
+            <h1>أهلاً بك في <span class="highlight-text">سوق الأساطير</span> 👋</h1>
+            <p>اكتشف أفضل المنتجات من البائعين الموثوقين</p>
+        </div>
+
+        <div class="quick-filters">
+            <button class="filter-chip active" onclick="filterBy('all')">الكل</button>
+            <button class="filter-chip" onclick="filterBy('electronics')">📱 إلكترونيات</button>
+            <button class="filter-chip" onclick="filterBy('cars')">🚗 سيارات</button>
+            <button class="filter-chip" onclick="filterBy('fashion')">👕 أزياء</button>
+            <button class="filter-chip" onclick="filterBy('home')">🏠 منزل</button>
+            <button class="filter-chip" onclick="filterBy('sports')">⚽ رياضة</button>
+            <button class="filter-chip" onclick="filterBy('books')">📚 كتب</button>
+        </div>
+
+        <div class="products-grid" id="productsGrid"></div>
+
+        <div class="no-products hidden" id="noProducts">
+            <div class="no-products-icon"><i class="fas fa-search"></i></div>
+            <h3>لا توجد منتجات</h3>
+            <p>جرب البحث بكلمات مختلفة أو تفقد الفلاتر</p>
+        </div>
+    </main>
+
+    <a href="/add-product" class="fab-btn" title="نشر منتج جديد">
+        <i class="fas fa-plus"></i>
+        <span class="fab-tooltip">نشر منتج</span>
+    </a>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const user = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || 'null');
+    if (!user) {
+        window.location.href = '/';
+        return;
+    }
+    loadProducts();
+    setupSearchListeners();
+});
+
+async function loadProducts() {
+    try {
+        const response = await fetch('/api/products');
+        const products = await response.json();
+        renderProducts(products);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function renderProducts(products) {
+    const grid = document.getElementById('productsGrid');
+    const noProducts = document.getElementById('noProducts');
+    
+    if (products.length === 0) {
+        grid.innerHTML = '';
+        noProducts.classList.remove('hidden');
+        return;
+    }
+    
+    noProducts.classList.add('hidden');
+    
+    const currencySymbols = {
+        'SAR': 'ر.س', 'USD': '$', 'EUR': '€', 'GBP': '£',
+        'AED': 'د.إ', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب',
+        'OMR': 'ر.ع', 'JOD': 'د.أ', 'EGP': 'ج.م', 'SDG': 'ج.س'
+    };
+    
+    const countryNames = {
+        'sa': 'السعودية', 'ae': 'الإمارات', 'kw': 'الكويت',
+        'qa': 'قطر', 'bh': 'البحرين', 'om': 'عمان',
+        'eg': 'مصر', 'sd': 'السودان', 'jo': 'الأردن'
+    };
+    
+    const categories = {
+        'electronics': 'إلكترونيات', 'cars': 'سيارات',
+        'fashion': 'أزياء', 'home': 'منزل',
+        'sports': 'رياضة', 'books': 'كتب'
+    };
+    
+    grid.innerHTML = products.map((product, index) => `
+        <div class="product-card" style="animation: fadeInUp 0.5s ease-out ${index * 0.1}s both">
+            <div class="product-image">
+                <img src="${product.image || 'https://via.placeholder.com/400x300?text=No+Image'}" alt="${product.name}">
+                <span class="product-badge">${categories[product.category] || product.category}</span>
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">${product.name}</h3>
+                <div class="product-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> ${countryNames[product.country] || product.country} - ${product.city}</span>
+                </div>
+                <div class="product-price">
+                    ${product.price.toLocaleString()} ${currencySymbols[product.currency] || product.currency}
+                </div>
+                <div class="product-footer">
+                    <div class="seller-info">
+                        <div class="seller-avatar">${product.seller?.name ? product.seller.name[0].toUpperCase() : 'U'}</div>
+                        <span class="seller-name">${product.seller?.name || 'مستخدم'}</span>
+                    </div>
+                    ${product.facebookLink ? `
+                        <a href="${product.facebookLink}" target="_blank" class="contact-btn" onclick="event.stopPropagation()">
+                            <i class="fab fa-facebook"></i> تواصل
+                        </a>
+                    ` : ''}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function setupSearchListeners() {
+    document.getElementById('searchInput')?.addEventListener('input', debounce(filterProducts, 300));
+    document.getElementById('countryFilter')?.addEventListener('change', filterProducts);
+    document.getElementById('cityFilter')?.addEventListener('input', debounce(filterProducts, 300));
+}
+
+async function filterProducts() {
+    const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+    const country = document.getElementById('countryFilter')?.value || '';
+    const city = document.getElementById('cityFilter')?.value.toLowerCase() || '';
+    
+    try {
+        const response = await fetch('/api/products');
+        let products = await response.json();
+        
+        if (searchTerm) products = products.filter(p => p.name.toLowerCase().includes(searchTerm));
+        if (country) products = products.filter(p => p.country === country);
+        if (city) products = products.filter(p => p.city.toLowerCase().includes(city));
+        
+        renderProducts(products);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function filterBy(category) {
+    document.querySelectorAll('.filter-chip').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    fetch('/api/products')
+        .then(r => r.json())
+        .then(products => {
+            if (category !== 'all') products = products.filter(p => p.category === category);
+            renderProducts(products);
+        });
+}
+
+function toggleMenu() {
+    document.getElementById('userMenu').classList.toggle('active');
+}
+
+document.addEventListener('click', function(e) {
+    const menu = document.getElementById('userMenu');
+    const menuBtn = document.querySelector('.menu-dots');
+    if (menu && !menu.contains(e.target) && !menuBtn?.contains(e.target)) {
+        menu.classList.remove('active');
+    }
+});
+
+function showProfile() {
+    const user = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || '{}');
+    showNotification(`مرحباً ${user.name || ''}!`, 'info');
+}
+
+function showHelp() {
+    showNotification('مركز المساعدة قريباً!', 'info');
+}
+
+function logout() {
+    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
+    showNotification('تم تسجيل الخروج بنجاح', 'success');
+    setTimeout(() => window.location.href = '/', 1000);
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), wait);
+    };
+}
+
+function showNotification(message, type = 'info') {
+    const existing = document.querySelectorAll('.notification');
+    existing.forEach(n => n.remove());
+    
+    const notification = document.createElement('div');
+    const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+    const colors = { success: '#10b981', error: '#ef4444', info: '#3b82f6' };
+    
+    notification.innerHTML = `<i class="fas ${icons[type]}"></i><span>${message}</span>`;
+    notification.style.cssText = `
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-100px);
+        background: rgba(15, 23, 42, 0.95); color: white;
+        padding: 16px 24px; border-radius: 12px;
+        display: flex; align-items: center; gap: 12px;
+        font-weight: 600; z-index: 10000;
+        border: 1px solid ${colors[type]};
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        transition: transform 0.3s ease;
+    `;
+    notification.querySelector('i').style.color = colors[type];
+    document.body.appendChild(notification);
+    
+    setTimeout(() => notification.style.transform = 'translateX(-50%) translateY(0)', 100);
+    setTimeout(() => {
+        notification.style.transform = 'translateX(-50%) translateY(-100px)';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+</script>
+</body>
+</html>
