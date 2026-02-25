@@ -1,0 +1,155 @@
+<script>
+// ====================
+// JavaScript - إضافة منتج
+// ====================
+
+document.addEventListener('DOMContentLoaded', function() {
+    // التحقق من تسجيل الدخول
+    const user = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || 'null');
+    if (!user) {
+        window.location.href = '/';
+        return;
+    }
+    
+    initImageUpload();
+    
+    document.getElementById('addProductForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('productName').value;
+        const price = document.getElementById('productPrice').value;
+        const currency = document.getElementById('productCurrency').value;
+        const category = document.getElementById('productCategory').value;
+        const description = document.getElementById('productDescription').value;
+        const facebookLink = document.getElementById('facebookLink').value;
+        const country = document.getElementById('productCountry').value;
+        const city = document.getElementById('productCity').value;
+        const phone = document.getElementById('contactPhone').value;
+        
+        if (!name || !price || !currency || !category || !country || !city) {
+            showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+            return;
+        }
+        
+        const imagePreview = document.querySelector('#imagePreview img');
+        const image = imagePreview ? imagePreview.src : null;
+        
+        const product = {
+            name, price: parseFloat(price), currency, category,
+            description, facebookLink, country, city, phone, image,
+            seller: user
+        };
+        
+        try {
+            const response = await fetch('/api/products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(product)
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                document.getElementById('successModal').classList.remove('hidden');
+            } else {
+                showNotification('خطأ في نشر المنتج', 'error');
+            }
+        } catch (error) {
+            showNotification('حدث خطأ، حاول مرة أخرى', 'error');
+        }
+    });
+});
+
+function initImageUpload() {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('productImage');
+    
+    if (!uploadArea || !fileInput) return;
+    
+    uploadArea.addEventListener('click', () => fileInput.click());
+    
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+    
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        if (e.dataTransfer.files.length > 0) {
+            handleImageFile(e.dataTransfer.files[0]);
+        }
+    });
+    
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleImageFile(e.target.files[0]);
+        }
+    });
+}
+
+function handleImageFile(file) {
+    if (!file.type.startsWith('image/')) {
+        showNotification('الرجاء اختيار ملف صورة صحيح', 'error');
+        return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+        showNotification('حجم الصورة يجب أن يكون أقل من 5 ميجابايت', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const preview = document.getElementById('imagePreview');
+        const placeholder = document.querySelector('.upload-placeholder');
+        preview.querySelector('img').src = e.target.result;
+        preview.classList.remove('hidden');
+        placeholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeImage() {
+    document.getElementById('imagePreview').classList.add('hidden');
+    document.querySelector('.upload-placeholder').style.display = 'block';
+    document.getElementById('productImage').value = '';
+}
+
+function goToDashboard() {
+    window.location.href = '/dashboard';
+}
+
+function showNotification(message, type = 'info') {
+    const existing = document.querySelectorAll('.notification');
+    existing.forEach(n => n.remove());
+    
+    const notification = document.createElement('div');
+    const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+    const colors = { success: '#10b981', error: '#ef4444', info: '#3b82f6' };
+    
+    notification.innerHTML = `<i class="fas ${icons[type]}"></i><span>${message}</span>`;
+    notification.style.cssText = `
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%) translateY(-100px);
+        background: rgba(15, 23, 42, 0.95); color: white;
+        padding: 16px 24px; border-radius: 12px;
+        display: flex; align-items: center; gap: 12px;
+        font-weight: 600; z-index: 10000;
+        border: 1px solid ${colors[type]};
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        transition: transform 0.3s ease;
+    `;
+    notification.querySelector('i').style.color = colors[type];
+    document.body.appendChild(notification);
+    
+    setTimeout(() => notification.style.transform = 'translateX(-50%) translateY(0)', 100);
+    setTimeout(() => {
+        notification.style.transform = 'translateX(-50%) translateY(-100px)';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+</script>
