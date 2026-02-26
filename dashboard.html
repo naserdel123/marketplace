@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سوق الأساطير - المنتجات</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-store"></i>
+            <span>سوق الأساطير</span>
+        </div>
+        
+        <div class="search-section">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="ابحث عن منتج...">
+                
+                <div class="advanced-search">
+                    <select id="searchCategory">
+                        <option value="">كل التصنيفات</option>
+                        <option value="electronics">📱 إلكترونيات</option>
+                        <option value="cars">🚗 سيارات</option>
+                        <option value="fashion">👕 أزياء</option>
+                        <option value="home">🏠 منزل</option>
+                        <option value="sports">⚽ رياضة</option>
+                        <option value="books">📚 كتب</option>
+                    </select>
+                    
+                    <select id="searchCountry">
+                        <option value="">كل البلدان</option>
+                        <option value="sa">🇸🇦 السعودية</option>
+                        <option value="sd">🇸🇩 السودان</option>
+                        <option value="ae">🇦🇪 الإمارات</option>
+                        <option value="kw">🇰🇼 الكويت</option>
+                        <option value="qa">🇶🇦 قطر</option>
+                        <option value="eg">🇪🇬 مصر</option>
+                    </select>
+                    
+                    <input type="text" id="searchCity" placeholder="المدينة...">
+                </div>
+                
+                <button class="search-btn" onclick="searchProducts()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="nav-menu" style="position: relative;">
+            <button class="menu-dots" onclick="toggleMenu()">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            
+            <div class="dropdown-menu" id="userMenu">
+                <a href="#" class="menu-item" onclick="showProfile()">
+                    <div class="menu-icon"><i class="fas fa-user-circle"></i></div>
+                    <div class="menu-info">
+                        <span class="menu-title">الملف الشخصي</span>
+                        <span class="menu-desc">عرض بياناتك</span>
+                    </div>
+                </a>
+                
+                <a href="/add-product" class="menu-item highlight">
+                    <div class="menu-icon"><i class="fas fa-plus-circle"></i></div>
+                    <div class="menu-info">
+                        <span class="menu-title">نشر منتج</span>
+                        <span class="menu-desc">أضف منتج جديد</span>
+                    </div>
+                </a>
+                
+                <div class="menu-divider"></div>
+                
+                <a href="#" class="menu-item logout" onclick="logout()">
+                    <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
+                    <div class="menu-info">
+                        <span class="menu-title">تسجيل الخروج</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="welcome-section">
+            <h1>أهلاً بك في <span class="highlight-text">سوق الأساطير</span> 👋</h1>
+            <p>اكتشف أفضل المنتجات من البائعين الموثوقين</p>
+        </div>
+
+        <div class="quick-filters">
+            <button class="filter-chip active" onclick="filterBy('all')">الكل</button>
+            <button class="filter-chip" onclick="filterBy('electronics')">📱 إلكترونيات</button>
+            <button class="filter-chip" onclick="filterBy('cars')">🚗 سيارات</button>
+            <button class="filter-chip" onclick="filterBy('fashion')">👕 أزياء</button>
+            <button class="filter-chip" onclick="filterBy('home')">🏠 منزل</button>
+        </div>
+
+        <div class="products-grid" id="productsGrid"></div>
+
+        <div class="no-products" id="noProducts" style="text-align: center; padding: 60px 20px;">
+            <div class="no-products-icon" style="width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 3rem; animation: bounce 2s infinite;">
+                <i class="fas fa-store"></i>
+            </div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 10px;">السوق فاضي حالياً</h3>
+            <p style="color: var(--gray); margin-bottom: 25px;">كن أول من ينشر منتج!</p>
+            <a href="/add-product" class="btn-primary" style="display: inline-flex; text-decoration: none;">
+                <i class="fas fa-plus"></i> نشر منتج الآن
+            </a>
+        </div>
+    </main>
+
+    <a href="/add-product" class="fab-btn">
+        <i class="fas fa-plus"></i>
+    </a>
+
+<script>
+const user = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || 'null');
+if (!user) window.location.href = '/';
+
+let allProducts = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadProducts();
+    
+    // البحث التلقائي
+    ['searchInput', 'searchCategory', 'searchCountry', 'searchCity'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', debounce(searchProducts, 300));
+    });
+});
+
+async function loadProducts() {
+    try {
+        const res = await fetch('/api/products');
+        allProducts = await res.json();
+        renderProducts(allProducts);
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function renderProducts(products) {
+    const grid = document.getElementById('productsGrid');
+    const empty = document.getElementById('noProducts');
+    
+    if (products.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+    }
+    
+    empty.style.display = 'none';
+    
+    const symbols = { SAR: 'ر.س', USD: '$', EUR: '€', SDG: 'ج.س' };
+    const countries = { sa: 'السعودية', sd: 'السودان', ae: 'الإمارات', kw: 'الكويت', qa: 'قطر', eg: 'مصر' };
+    const cats = { electronics: 'إلكترونيات', cars: 'سيارات', fashion: 'أزياء', home: 'منزل', sports: 'رياضة', books: 'كتب' };
+    
+    grid.innerHTML = products.map((p, i) => `
+        <div class="product-card" style="animation: fadeInUp 0.5s ${i * 0.1}s both;">
+            <div class="product-image">
+                <img src="${p.image || 'https://via.placeholder.com/400x300?text=No+Image'}" alt="${p.name}">
+                <span class="product-badge">${cats[p.category] || p.category}</span>
+            </div>
+            <div class="product-info" style="padding: 20px;">
+                <h3 class="product-title" style="font-size: 1.2rem; margin-bottom: 10px;">${p.name}</h3>
+                <div style="color: var(--gray); font-size: 0.9rem; margin-bottom: 10px;">
+                    <i class="fas fa-map-marker-alt"></i> ${countries[p.country] || p.country} - ${p.city}
+                </div>
+                <div class="product-price" style="font-size: 1.5rem; margin-bottom: 15px;">
+                    ${p.price.toLocaleString()} ${symbols[p.currency] || p.currency}
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 35px; height: 35px; background: var(--gradient-1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                            ${p.seller?.name?.[0] || 'U'}
+                        </div>
+                        <span style="color: var(--gray); font-size: 0.9rem;">${p.seller?.name || 'مستخدم'}</span>
+                    </div>
+                    ${p.facebookLink ? `<a href="${p.facebookLink}" target="_blank" style="padding: 8px 15px; background: rgba(99,102,241,0.2); border-radius: 8px; color: var(--primary-light); text-decoration: none;"><i class="fab fa-facebook"></i></a>` : ''}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function searchProducts() {
+    const term = document.getElementById('searchInput').value.toLowerCase();
+    const cat = document.getElementById('searchCategory').value;
+    const country = document.getElementById('searchCountry').value;
+    const city = document.getElementById('searchCity').value.toLowerCase();
+    
+    let filtered = allProducts;
+    
+    if (term) filtered = filtered.filter(p => p.name.toLowerCase().includes(term));
+    if (cat) filtered = filtered.filter(p => p.category === cat);
+    if (country) filtered = filtered.filter(p => p.country === country);
+    if (city) filtered = filtered.filter(p => p.city.toLowerCase().includes(city));
+    
+    renderProducts(filtered);
+}
+
+function filterBy(cat) {
+    document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    if (cat === 'all') renderProducts(allProducts);
+    else renderProducts(allProducts.filter(p => p.category === cat));
+}
+
+function toggleMenu() {
+    document.getElementById('userMenu').classList.toggle('active');
+}
+
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('userMenu');
+    if (!e.target.closest('.nav-menu')) menu.classList.remove('active');
+});
+
+function showProfile() {
+    alert('مرحباً ' + user.name);
+}
+
+function logout() {
+    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
+    window.location.href = '/';
+}
+
+function debounce(fn, ms) {
+    let t;
+    return (...a) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...a), ms);
+    };
+}
+</script>
+</body>
+</html>
