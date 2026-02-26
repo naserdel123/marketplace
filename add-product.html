@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سوق الأساطير - نشر منتج</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="add-product-body">
+    <!-- خلفية متحركة -->
+    <div class="page-bg">
+        <div class="bg-pattern"></div>
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+    </div>
+
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <a href="/dashboard" class="back-btn" style="display: flex; align-items: center; gap: 8px; color: var(--gray); text-decoration: none;">
+            <i class="fas fa-arrow-right"></i>
+            <span>رجوع</span>
+        </a>
+        <div class="nav-title" style="font-size: 1.2rem; font-weight: 700;">نشر منتج جديد</div>
+        <div style="width: 60px;"></div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="centered-container">
+        <div class="form-container">
+            <!-- Header -->
+            <div class="form-header">
+                <div class="form-icon-wrapper">
+                    <div class="icon-ring"></div>
+                    <div class="icon-ring"></div>
+                    <div class="form-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                </div>
+                <h1>أضف منتجك للبيع</h1>
+                <p>املأ التفاصيل التالية لنشر منتجك في السوق</p>
+            </div>
+
+            <!-- Progress Steps -->
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <span class="step-label">الصورة</span>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <span class="step-label">التفاصيل</span>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <span class="step-label">النشر</span>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form id="addProductForm">
+                <!-- قسم الصورة -->
+                <div class="form-section">
+                    <h3><i class="fas fa-image"></i> صورة المنتج</h3>
+                    <div class="image-upload-section">
+                        <div class="upload-area" id="uploadArea">
+                            <input type="file" id="productImage" accept="image/*" hidden>
+                            <div class="upload-icon-wrapper">
+                                <div class="upload-pulse"></div>
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <span>اضغط أو اسحب صورة المنتج هنا</span>
+                            <small>PNG, JPG حتى 5MB</small>
+                        </div>
+                        <div class="upload-preview hidden" id="imagePreview">
+                            <img src="" alt="معاينة المنتج">
+                            <button type="button" class="remove-image" onclick="removeImage()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- قسم المعلومات -->
+                <div class="form-section">
+                    <h3><i class="fas fa-tag"></i> معلومات المنتج</h3>
+                    
+                    <div class="form-row">
+                        <div class="input-group floating">
+                            <input type="text" id="productName" required placeholder=" ">
+                            <label for="productName">اسم المنتج *</label>
+                            <i class="fas fa-box input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-row two-cols">
+                        <div class="input-group floating">
+                            <input type="number" id="productPrice" required placeholder=" " min="0" step="0.01">
+                            <label for="productPrice">السعر *</label>
+                            <i class="fas fa-money-bill-wave input-icon"></i>
+                        </div>
+                        
+                        <div class="input-group floating select-group">
+                            <select id="productCurrency" required>
+                                <option value="SAR">🇸🇦 ريال سعودي</option>
+                                <option value="SDG">🇸🇩 جنيه سوداني</option>
+                                <option value="USD">🇺🇸 دولار أمريكي</option>
+                                <option value="EUR">🇪🇺 يورو</option>
+                                <option value="GBP">🇬🇧 جنيه إسترليني</option>
+                                <option value="AED">🇦🇪 درهم إماراتي</option>
+                                <option value="KWD">🇰🇼 دينار كويتي</option>
+                                <option value="QAR">🇶🇦 ريال قطري</option>
+                                <option value="EGP">🇪🇬 جنيه مصري</option>
+                            </select>
+                            <i class="fas fa-coins input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-row two-cols">
+                        <div class="input-group floating">
+                            <select id="productCategory" required>
+                                <option value="">اختر التصنيف</option>
+                                <option value="electronics">📱 إلكترونيات</option>
+                                <option value="cars">🚗 سيارات</option>
+                                <option value="fashion">👕 أزياء</option>
+                                <option value="home">🏠 منزل</option>
+                                <option value="sports">⚽ رياضة</option>
+                                <option value="books">📚 كتب</option>
+                                <option value="other">📦 أخرى</option>
+                            </select>
+                            <label for="productCategory">التصنيف *</label>
+                            <i class="fas fa-folder input-icon"></i>
+                        </div>
+
+                        <div class="input-group floating">
+                            <input type="tel" id="contactPhone" placeholder=" ">
+                            <label for="contactPhone">رقم الهاتف</label>
+                            <i class="fas fa-phone input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="input-group floating textarea-group">
+                            <textarea id="productDescription" rows="3" placeholder=" "></textarea>
+                            <label for="productDescription">وصف المنتج</label>
+                            <i class="fas fa-align-right input-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- قسم الموقع -->
+                <div class="form-section">
+                    <h3><i class="fas fa-map-marker-alt"></i> الموقع والتواصل</h3>
+                    
+                    <div class="form-row">
+                        <div class="input-group floating">
+                            <input type="url" id="facebookLink" placeholder=" ">
+                            <label for="facebookLink"><i class="fab fa-facebook" style="margin-left: 5px;"></i> رابط الفيسبوك للتواصل</label>
+                            <i class="fas fa-link input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-row two-cols">
+                        <div class="input-group floating">
+                            <select id="productCountry" required>
+                                <option value="">اختر البلد *</option>
+                                <option value="sa">🇸🇦 السعودية</option>
+                                <option value="sd">🇸🇩 السودان</option>
+                                <option value="ae">🇦🇪 الإمارات</option>
+                                <option value="kw">🇰🇼 الكويت</option>
+                                <option value="qa">🇶🇦 قطر</option>
+                                <option value="bh">🇧🇭 البحرين</option>
+                                <option value="om">🇴🇲 عمان</option>
+                                <option value="eg">🇪🇬 مصر</option>
+                                <option value="jo">🇯🇴 الأردن</option>
+                                <option value="iq">🇮🇶 العراق</option>
+                                <option value="sy">🇸🇾 سوريا</option>
+                                <option value="lb">🇱🇧 لبنان</option>
+                                <option value="ye">🇾🇪 اليمن</option>
+                                <option value="other">🌍 دولة أخرى</option>
+                            </select>
+                            <i class="fas fa-globe input-icon"></i>
+                        </div>
+                        
+                        <div class="input-group floating">
+                            <input type="text" id="productCity" required placeholder=" ">
+                            <label for="productCity">المدينة *</label>
+                            <i class="fas fa-city input-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الأزرار -->
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="window.location.href='/dashboard'">
+                        <i class="fas fa-times"></i> إلغاء
+                    </button>
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        <span>نشر المنتج</span>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-content">
+            <div class="success-checkmark">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2 style="font-size: 2rem; margin-bottom: 15px;">تم النشر بنجاح! 🎉</h2>
+            <p style="color: var(--gray); margin-bottom: 30px;">منتجك الآن متاح في السوق</p>
+            <button class="btn-primary" onclick="window.location.href='/dashboard'" style="animation: none;">
+                <i class="fas fa-home"></i> العودة للرئيسية
+            </button>
+        </div>
+    </div>
+
+<script>
+// التحقق من تسجيل الدخول
+const user = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || 'null');
+if (!user) {
+    window.location.href = '/';
+}
+
+// عناصر DOM
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('productImage');
+const imagePreview = document.getElementById('imagePreview');
+const form = document.getElementById('addProductForm');
+const submitBtn = document.getElementById('submitBtn');
+const successOverlay = document.getElementById('successOverlay');
+
+// تحديث خطوات التقدم
+function updateSteps(step) {
+    document.querySelectorAll('.step').forEach((s, i) => {
+        if (i < step) s.classList.add('active');
+        else s.classList.remove('active');
+    });
+}
+
+// رفع الصورة
+uploadArea.addEventListener('click', () => fileInput.click());
+
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('dragover');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+});
+
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) handleFile(e.target.files[0]);
+});
+
+function handleFile(file) {
+    if (!file.type.startsWith('image/')) {
+        showNotification('الرجاء اختيار صورة', 'error');
+        return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+        showNotification('حجم الصورة كبير جداً', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        imagePreview.querySelector('img').src = e.target.result;
+        imagePreview.classList.remove('hidden');
+        uploadArea.style.display = 'none';
+        updateSteps(2);
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeImage() {
+    imagePreview.classList.add('hidden');
+    uploadArea.style.display = 'block';
+    fileInput.value = '';
+    updateSteps(1);
+}
+
+// مراقبة تعبئة الحقول
+const inputs = ['productName', 'productPrice', 'productCategory', 'productCountry', 'productCity'];
+inputs.forEach(id => {
+    document.getElementById(id)?.addEventListener('change', checkProgress);
+});
+
+function checkProgress() {
+    const filled = inputs.filter(id => document.getElementById(id)?.value).length;
+    if (filled >= 3) updateSteps(2);
+    if (filled >= 5) updateSteps(3);
+}
+
+// إرسال النموذج
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('productName').value;
+    const price = document.getElementById('productPrice').value;
+    const currency = document.getElementById('productCurrency').value;
+    const category = document.getElementById('productCategory').value;
+    const description = document.getElementById('productDescription').value;
+    const facebookLink = document.getElementById('facebookLink').value;
+    const country = document.getElementById('productCountry').value;
+    const city = document.getElementById('productCity').value;
+    const phone = document.getElementById('contactPhone').value;
+    
+    if (!name || !price || !category || !country || !city) {
+        showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
+    
+    const img = imagePreview.querySelector('img');
+    const image = img && !imagePreview.classList.contains('hidden') ? img.src : null;
+    
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري النشر...';
+    submitBtn.disabled = true;
+    
+    try {
+        const response = await fetch('/api/products', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name, price: parseFloat(price), currency, category,
+                description, facebookLink, country, city, phone, image,
+                seller: user
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            successOverlay.classList.add('active');
+        } else {
+            throw new Error(data.error);
+        }
+    } catch (error) {
+        showNotification('حدث خطأ: ' + error.message, 'error');
+        submitBtn.innerHTML = '<span>نشر المنتج</span><i class="fas fa-paper-plane"></i>';
+        submitBtn.disabled = false;
+    }
+});
+
+// إشعارات
+function showNotification(message, type) {
+    const existing = document.querySelector('.notification');
+    if (existing) existing.remove();
+    
+    const n = document.createElement('div');
+    n.className = 'notification';
+    n.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'}"></i><span>${message}</span>`;
+    n.style.cssText = `
+        position: fixed; top: 20px; left: 50%;
+        transform: translateX(-50%);
+        background: ${type === 'error' ? '#ef4444' : '#10b981'};
+        color: white; padding: 15px 25px; border-radius: 10px;
+        display: flex; align-items: center; gap: 10px;
+        font-weight: 600; z-index: 10000;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        animation: fadeInDown 0.3s;
+    `;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 3000);
+}
+</script>
+</body>
+  </html>
+  
